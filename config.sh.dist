@@ -1,0 +1,7 @@
+#!/bin/bash
+# -*- coding: UTF8 -*-
+
+TABLEAU_HOST=
+TABLEAU_MDP=
+
+HOME_HOST=
