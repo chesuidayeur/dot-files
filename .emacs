@@ -6,13 +6,15 @@
  '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
  '(fci-rule-color "dim gray")
  '(fill-column 80)
+ '(js-indent-level 2)
  '(org-agenda-files (quote ("~/org/gtd.org")))
+ '(org-agenda-window-setup (quote current-window))
  '(org-capture-templates (quote (("t" "Tasks" entry (file+headline "gtd.org" "Tasks") "* TODO %? %^g
  %^t
  %u") ("j" "Journal" entry (file+datetree "journal.org") "* %u %?"))))
  '(package-archives (quote (("gnu" . "http://elpa.gnu.org/packages/") ("marmalade" . "http://marmalade-repo.org/packages/"))))
  '(python-indent-offset 2)
- '(sql-connection-alist (quote (("applifi" (sql-product (quote postgres)) (sql-user "postgres") (sql-server "localhost") (sql-database "himedia") (sql-port 54322)) ("dwh" (sql-user "dw") (sql-server "localhost") (sql-database "datawarehouse") (sql-port 54323)) ("reporting" (sql-user "postgres") (sql-server "localhost") (sql-database "reporting") (sql-port 54323)) ("tpp" (sql-user "postgres") (sql-server "localhost") (sql-database "tpp") (sql-port 54323)) ("dev-dwh" (sql-user "dw") (sql-server "localhost") (sql-database "datawarehouse_pgeoffroy") (sql-port 54321)) ("dev-tpp" (sql-user "applifi") (sql-server "localhost") (sql-database "tpp") (sql-port 64321)) ("dev-applifi" (sql-user "applifi") (sql-server "localhost") (sql-database "himedia") (sql-port 64321)) ("allopass" (sql-user "postgres") (sql-server "localhost") (sql-database "allopass") (sql-port 54323)))))
+ '(sql-connection-alist (quote (("applifi" (sql-product (quote postgres)) (sql-user "postgres") (sql-server "localhost") (sql-database "himedia") (sql-port 54322)) ("dwh" (sql-user "dw") (sql-server "localhost") (sql-database "datawarehouse") (sql-port 54323)) ("reporting" (sql-user "postgres") (sql-server "localhost") (sql-database "reporting") (sql-port 54323)) ("tpp" (sql-user "postgres") (sql-server "localhost") (sql-database "tpp") (sql-port 54323)) ("dev-dwh" (sql-user "dw") (sql-server "localhost") (sql-database "datawarehouse_pgeoffroy") (sql-port 54321)) ("dev-tpp" (sql-user "applifi") (sql-server "localhost") (sql-database "tpp") (sql-port 64321)) ("dev-applifi" (sql-user "applifi") (sql-server "localhost") (sql-database "himedia") (sql-port 64321)) ("allopass" (sql-user "postgres") (sql-server "localhost") (sql-database "allopass") (sql-port 54323)) ("hipay" (sql-user "postgres") (sql-server "localhost") (sql-database "hipay") (sql-port 54323)))))
  '(sql-postgres-login-params (quote ((user :default "pgeoffroy") (database :default "pgeoffroy") (port :default 54322) server)))
  '(sql-product (quote postgres))
  '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
@@ -113,6 +115,11 @@
 (ac-config-default)
 (global-auto-complete-mode t)
 
+(require 'smex) ; Not needed if you use package.el
+(smex-initialize)
+(global-set-key "\M-x" 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+
 (dolist (mode '(org-mode
 		text-mode
 		git-commit-mode
@@ -172,3 +179,11 @@
 ;; ORG Mode
 (global-set-key (kbd "C-c c") 'org-capture)
 
+
+(add-hook 'before-save-hook
+          (lambda ()
+            (when buffer-file-name
+              (let ((dir (file-name-directory buffer-file-name)))
+                (when (and (not (file-exists-p dir))
+                           (y-or-n-p (format "Directory %s does not exist. Create it?" dir)))
+                  (make-directory dir t))))))
