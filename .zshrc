@@ -73,8 +73,8 @@ fi
 
 source ~/dot-files/config.sh
 
-alias tableau="rdesktop -g 1918x1040 -u pgeoffroy -p \"${TABLEAU_MDP}\" -D -N -P -z -r disk:csv=/home/pgeoffroy/tableau-share ${TABLEAU_HOST}"
-#alias tableau='rdesktop -g "1200x900" -u pgeoffroy -N -P -z -r disk:csv=/home/pgeoffroy/tableau-share tableau1-drt.reporting.db.hi-media-techno.com'
+alias tableau="rdesktop -g 1918x1040 -u ${TABLEAU_USER} -p \"${TABLEAU_MDP}\" -D -N -P -z -r disk:csv=/home/pgeoffroy/tableau-share ${TABLEAU_HOST}"
+alias tableauLaptop="rdesktop -g 1360x740 -u ${TABLEAU_USER} -p \"${TABLEAU_MDP}\" -D -N -P -z -r disk:csv=/home/pgeoffroy/tableau-share ${TABLEAU_HOST}"
 
 alias git='LANG=en_US.UTF-8 git'
 
