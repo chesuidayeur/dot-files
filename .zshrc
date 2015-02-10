@@ -68,15 +68,18 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='mvim'
+  export EDITOR='vim'
 fi
 
 source ~/dot-files/config.sh
 
 alias tableau="rdesktop -g 1918x1040 -u ${TABLEAU_USER} -p \"${TABLEAU_MDP}\" -D -N -P -z -r disk:csv=/home/pgeoffroy/tableau-share ${TABLEAU_HOST}"
+alias tableauLow="rdesktop -g 1600x870 -u ${TABLEAU_USER} -p \"${TABLEAU_MDP}\" -D -N -P -z -r disk:csv=/home/pgeoffroy/tableau-share ${TABLEAU_HOST}"
 alias tableauLaptop="rdesktop -g 1360x740 -u ${TABLEAU_USER} -p \"${TABLEAU_MDP}\" -D -N -P -z -r disk:csv=/home/pgeoffroy/tableau-share ${TABLEAU_HOST}"
 
 alias git='LANG=en_US.UTF-8 git'
+
+alias fax="ps fax"
 
 export LESSCHARSET=UTF-8
 
