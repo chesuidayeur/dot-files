@@ -3,19 +3,86 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
+ '(custom-safe-themes
+   (quote
+    ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
  '(fci-rule-color "dim gray")
  '(fill-column 80)
+ '(gnus-use-full-window t)
  '(js-indent-level 2)
- '(org-agenda-files (quote ("~/org/gtd.org")))
+ '(org-agenda-files (quote ("~/Documents/notes-emacs/gtd.org")))
  '(org-agenda-window-setup (quote current-window))
- '(org-capture-templates (quote (("t" "Tasks" entry (file+headline "gtd.org" "Tasks") "* TODO %? %^g
+ '(org-capture-templates
+   (quote
+    (("t" "Tasks" entry
+      (file+headline "gtd.org" "Tasks")
+      "* TODO %? %^g
  %^t
- %u") ("j" "Journal" entry (file+datetree "journal.org") "* %u %?"))))
- '(package-archives (quote (("gnu" . "http://elpa.gnu.org/packages/") ("marmalade" . "http://marmalade-repo.org/packages/"))))
+ %u")
+     ("j" "Journal" entry
+      (file+datetree "journal.org")
+      "* %u %?"))))
+ '(package-archives
+   (quote
+    (("gnu" . "http://elpa.gnu.org/packages/")
+     ("marmalade" . "http://marmalade-repo.org/packages/")
+     ("e6h" . "http://www.e6h.org/packages/"))))
  '(python-indent-offset 2)
- '(sql-connection-alist (quote (("applifi" (sql-product (quote postgres)) (sql-user "postgres") (sql-server "localhost") (sql-database "himedia") (sql-port 54322)) ("dwh" (sql-user "dw") (sql-server "localhost") (sql-database "datawarehouse") (sql-port 54323)) ("reporting" (sql-user "postgres") (sql-server "localhost") (sql-database "reporting") (sql-port 54323)) ("tpp" (sql-user "postgres") (sql-server "localhost") (sql-database "tpp") (sql-port 54323)) ("dev-dwh" (sql-user "dw") (sql-server "localhost") (sql-database "datawarehouse_pgeoffroy") (sql-port 54321)) ("dev-tpp" (sql-user "applifi") (sql-server "localhost") (sql-database "tpp") (sql-port 64321)) ("dev-applifi" (sql-user "applifi") (sql-server "localhost") (sql-database "himedia") (sql-port 64321)) ("allopass" (sql-user "postgres") (sql-server "localhost") (sql-database "allopass") (sql-port 54323)) ("hipay" (sql-user "postgres") (sql-server "localhost") (sql-database "hipay") (sql-port 54323)))))
- '(sql-postgres-login-params (quote ((user :default "pgeoffroy") (database :default "pgeoffroy") (port :default 54322) server)))
+ '(sql-connection-alist
+   (quote
+    (("applifi"
+      (sql-product
+       (quote postgres))
+      (sql-user "postgres")
+      (sql-server "localhost")
+      (sql-database "himedia")
+      (sql-port 54322))
+     ("dwh"
+      (sql-user "dw")
+      (sql-server "localhost")
+      (sql-database "datawarehouse")
+      (sql-port 54323))
+     ("reporting"
+      (sql-user "postgres")
+      (sql-server "localhost")
+      (sql-database "reporting")
+      (sql-port 54323))
+     ("tpp"
+      (sql-user "postgres")
+      (sql-server "localhost")
+      (sql-database "tpp")
+      (sql-port 54323))
+     ("dev-dwh"
+      (sql-user "dw")
+      (sql-server "localhost")
+      (sql-database "datawarehouse_pgeoffroy")
+      (sql-port 54321))
+     ("dev-tpp"
+      (sql-user "applifi")
+      (sql-server "localhost")
+      (sql-database "tpp")
+      (sql-port 64321))
+     ("dev-applifi"
+      (sql-user "applifi")
+      (sql-server "localhost")
+      (sql-database "himedia")
+      (sql-port 64321))
+     ("allopass"
+      (sql-user "postgres")
+      (sql-server "localhost")
+      (sql-database "allopass")
+      (sql-port 54323))
+     ("hipay"
+      (sql-user "postgres")
+      (sql-server "localhost")
+      (sql-database "hipay")
+      (sql-port 54323)))))
+ '(sql-postgres-login-params
+   (quote
+    ((user :default "pgeoffroy")
+     (database :default "pgeoffroy")
+     (port :default 54322)
+     server)))
  '(sql-product (quote postgres))
  '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
 (custom-set-faces
@@ -24,6 +91,66 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(add-to-list 'load-path "~/.emacs.d/el-get")
+
+; el-get stuff
+
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+
+(unless (require 'el-get nil t)
+  (url-retrieve
+   "https://github.com/dimitri/el-get/raw/master/el-get-install.el"
+   (lambda (s)
+     (end-of-buffer)
+     (eval-print-last-sexp))))
+
+;; now either el-get is `require'd already, or have been `load'ed by the
+;; el-get installer.
+
+;; set local recipes, el-get-sources should only accept PLIST element
+(setq
+ el-get-sources
+ '((:name buffer-move			; have to add your own keys
+	  :after (progn
+		   (global-set-key (kbd "<C-S-up>")     'buf-move-up)
+		   (global-set-key (kbd "<C-S-down>")   'buf-move-down)
+		   (global-set-key (kbd "<C-S-left>")   'buf-move-left)
+		   (global-set-key (kbd "<C-S-right>")  'buf-move-right)))
+
+   (:name smex				; a better (ido like) M-x
+	  :after (progn
+		   (setq smex-save-file "~/.emacs.d/.smex-items")
+		   (global-set-key (kbd "M-x") 'smex)
+		   (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
+
+   (:name magit				; git meet emacs, and a binding
+	  :after (progn
+		   (global-set-key (kbd "C-x C-z") 'magit-status)))
+
+   (:name goto-last-change		; move pointer back to last change
+	  :after (progn
+		   ;; when using AZERTY keyboard, consider C-x C-_
+		   (global-set-key (kbd "C-x C-/") 'goto-last-change)))))
+
+;; now set our own packages
+(setq
+ my:el-get-packages
+ '(el-get				; el-get is self-hosting
+   escreen            			; screen for emacs, C-\ C-h
+   php-mode-improved			; if you're into php...
+   switch-window			; takes over C-x o
+;   wanderlust                           ; mail
+;   zencoding-mode			; http://www.emacswiki.org/emacs/ZenCoding
+   ))
+
+;(setq my:el-get-packages
+;      (append my:el-get-packages
+;              (mapcar #'el-get-source-name el-get-sources)))
+
+;; install new packages and init already installed packages
+(el-get 'sync my:el-get-packages)
+
 
 (package-initialize)
 (load-theme 'solarized-dark t)
