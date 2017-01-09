@@ -8,26 +8,48 @@
     ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" default)))
  '(fci-rule-color "dim gray")
  '(fill-column 80)
- '(gnus-use-full-window t)
  '(js-indent-level 2)
- '(org-agenda-files (quote ("~/Documents/notes-emacs/gtd.org")))
+ '(org-agenda-custom-commands
+   (quote
+    (("n" "Agenda and all TODO's"
+      ((agenda "" nil)
+       (alltodo "" nil))
+      nil)
+     ("2" "Perso"
+      ((alltodo ""
+                ((org-agenda-files
+                  (quote
+                   ("~/Documents/notes-emacs/projets-perso.org"))))))
+      nil nil)
+     ("1" "Work Todo"
+      ((alltodo ""
+                ((org-agenda-files
+                  (quote
+                   ("~/Documents/notes-emacs/gtd.org"))))))
+      nil nil))))
+ '(org-agenda-files nil)
  '(org-agenda-window-setup (quote current-window))
  '(org-capture-templates
    (quote
-    (("t" "Tasks" entry
-      (file+headline "gtd.org" "Tasks")
+    (("p" "Projet perso" entry
+      (file+headline "~/Documents/notes-emacs/projets-perso.org" "Projets perso")
       "* TODO %? %^g
- %^t
+%u")
+     ("t" "Tasks" entry
+      (file+headline "~/Documents/notes-emacs/gtd.org" "Tasks")
+      "* TODO %? %^g
+ SCHEDULED: %^t
  %u")
      ("j" "Journal" entry
-      (file+datetree "journal.org")
+      (file+datetree "~/Documents/notes-emacs/journal.org")
       "* %u %?"))))
  '(package-archives
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
-     ("marmalade" . "http://marmalade-repo.org/packages/")
-     ("e6h" . "http://www.e6h.org/packages/"))))
+     ("e6h" . "http://www.e6h.org/packages/")
+     ("melpa" . "http://melpa.org/packages/"))))
  '(python-indent-offset 2)
+ '(sh-basic-offset 2)
  '(sql-connection-alist
    (quote
     (("applifi"
@@ -41,7 +63,7 @@
       (sql-user "dw")
       (sql-server "localhost")
       (sql-database "datawarehouse")
-      (sql-port 54323))
+      (sql-port 54324))
      ("reporting"
       (sql-user "postgres")
       (sql-server "localhost")
@@ -55,10 +77,10 @@
      ("dev-dwh"
       (sql-user "dw")
       (sql-server "localhost")
-      (sql-database "datawarehouse_pgeoffroy")
-      (sql-port 54321))
+      (sql-database "datawarehouse")
+      (sql-port 64321))
      ("dev-tpp"
-      (sql-user "applifi")
+      (sql-user "postgres")
       (sql-server "localhost")
       (sql-database "tpp")
       (sql-port 64321))
@@ -76,7 +98,12 @@
       (sql-user "postgres")
       (sql-server "localhost")
       (sql-database "hipay")
-      (sql-port 54323)))))
+      (sql-port 54323))
+     ("bddtemp"
+      (sql-user "postgres")
+      (sql-server "localhost")
+      (sql-database "tpp")
+      (sql-port 54325)))))
  '(sql-postgres-login-params
    (quote
     ((user :default "pgeoffroy")
@@ -84,6 +111,7 @@
      (port :default 54322)
      server)))
  '(sql-product (quote postgres))
+ '(tab-width 2)
  '(uniquify-buffer-name-style (quote forward) nil (uniquify)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -91,10 +119,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-(add-to-list 'load-path "~/.emacs.d/el-get")
-
-; el-get stuff
 
 (add-to-list 'load-path "~/.emacs.d/el-get/el-get")
 
@@ -111,27 +135,16 @@
 ;; set local recipes, el-get-sources should only accept PLIST element
 (setq
  el-get-sources
- '((:name buffer-move			; have to add your own keys
+ '((:name buffer-move                  ; have to add your own keys
 	  :after (progn
 		   (global-set-key (kbd "<C-S-up>")     'buf-move-up)
 		   (global-set-key (kbd "<C-S-down>")   'buf-move-down)
 		   (global-set-key (kbd "<C-S-left>")   'buf-move-left)
 		   (global-set-key (kbd "<C-S-right>")  'buf-move-right)))
 
-   (:name smex				; a better (ido like) M-x
+   (:name magit                        ; git meet emacs, and a binding
 	  :after (progn
-		   (setq smex-save-file "~/.emacs.d/.smex-items")
-		   (global-set-key (kbd "M-x") 'smex)
-		   (global-set-key (kbd "M-X") 'smex-major-mode-commands)))
-
-   (:name magit				; git meet emacs, and a binding
-	  :after (progn
-		   (global-set-key (kbd "C-x C-z") 'magit-status)))
-
-   (:name goto-last-change		; move pointer back to last change
-	  :after (progn
-		   ;; when using AZERTY keyboard, consider C-x C-_
-		   (global-set-key (kbd "C-x C-/") 'goto-last-change)))))
+		   (global-set-key (kbd "C-x C-z") 'magit-status)))))
 
 ;; now set our own packages
 (setq
@@ -140,22 +153,33 @@
    escreen            			; screen for emacs, C-\ C-h
    php-mode-improved			; if you're into php...
    switch-window			; takes over C-x o
-;   wanderlust                           ; mail
-;   zencoding-mode			; http://www.emacswiki.org/emacs/ZenCoding
-   ))
+   auto-complete
+	 color-theme-solarized
+	 smex))
 
-;(setq my:el-get-packages
-;      (append my:el-get-packages
-;              (mapcar #'el-get-source-name el-get-sources)))
+;
+;; Some recipes require extra tools to be installed
+;;
+;; Note: el-get-install requires git, so we know we have at least that.
+;;
+;(when (el-get-executable-find "cvs")
+;  (add-to-list 'my:el-get-packages 'emacs-goodies-el)) ; the debian addons for emacs
+;
+;(when (el-get-executable-find "svn")
+;  (loop for p in '(psvn    		; M-x svn-status
+;		   yasnippet		; powerful snippet mode
+;		   )
+;	do (add-to-list 'my:el-get-packages p)))
+
+(setq my:el-get-packages
+      (append my:el-get-packages
+              (mapcar #'el-get-source-name el-get-sources)))
 
 ;; install new packages and init already installed packages
 (el-get 'sync my:el-get-packages)
 
-
-(package-initialize)
 (load-theme 'solarized-dark t)
-;(load-theme 'solarized-dark)
-;(load-theme 'tango)
+
 
 ; Enlève la barre de menu
 (menu-bar-mode -1)
@@ -184,7 +208,7 @@
 '(("." . "~/.emacs-backup-files/")))
 
 ; Pour ne pas avoir à taper en entier la réponse yes/no
-;(fset 'yes-or-no-p 'y-or-n-p)
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; bépo Bindings
 (global-unset-key "\C-x\C-e")
@@ -223,15 +247,20 @@
 ;;(global-unset-key "\C-g")
 ;;(global-set-key (kbd "C-,") 'keyboard-quit)
 
+;; Use the clipboard, pretty please, so that copy/paste "works"
+;(setq x-select-enable-clipboard t)
+
+(global-hl-line-mode)
+
+;; S-fleches pour changer de fenêtre
+(windmove-default-keybindings 'meta)
+(setq windmove-wrap-around t)
+
+
 (require 'ido)
 (ido-mode t)
 
 (require 'uniquify)
-
-;(require 'fill-column-indicator)
-;(define-globalized-minor-mode
-; global-fci-mode fci-mode (lambda () (fci-mode 1)))
-;(global-fci-mode t)
 
 (setq desktop-restore-eager 20)
 (desktop-save-mode 1)
@@ -242,10 +271,10 @@
 (ac-config-default)
 (global-auto-complete-mode t)
 
-(require 'smex) ; Not needed if you use package.el
-(smex-initialize)
-(global-set-key "\M-x" 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;(require 'smex) ; Not needed if you use package.el
+;(smex-initialize)
+;(global-set-key "\M-x" 'smex)
+;(global-set-key (kbd "M-X") 'smex-major-mode-commands)
 
 (dolist (mode '(org-mode
 		text-mode
@@ -287,6 +316,9 @@
           (lambda ()
             (setq sql-alternate-buffer-name (sql-make-smart-buffer-name))
             (sql-rename-buffer)))
+
+;; winner-mode pour revenir sur le layout précédent C-c <left>
+(winner-mode 1)
 
 (show-paren-mode 1)
 

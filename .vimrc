@@ -1,9 +1,17 @@
+" Note: Skip initialization for vim-tiny or vim-small.
+if !1 | finish | endif
+
 if has('vim_starting')
-  set nocompatible               " Be iMproved
+  if &compatible
+    set nocompatible               " Be iMproved
+  endif
+
+  " Required:
   set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
 
-call neobundle#rc(expand('~/.vim/bundle/'))
+" Required:
+call neobundle#begin(expand('~/.vim/bundle/'))
 
 " Let NeoBundle manage NeoBundle
 NeoBundleFetch 'Shougo/neobundle.vim'
@@ -40,6 +48,7 @@ NeoBundle 'majutsushi/tagbar'
 NeoBundle 'kien/ctrlp.vim'
 NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'altercation/vim-colors-solarized'
+NeoBundle 'chrisbra/csv.vim'
 " Non github repos
 "NeoBundle 'git://git.wincent.com/command-t.git'
 " gist repos
@@ -60,11 +69,13 @@ filetype plugin indent on     " Required!
 " :NeoBundleInstall(!)    - install(update) bundles
 " :NeoBundleClean(!)      - confirm(or auto-approve) removal of unused bundles
 
+call neobundle#end()
+
 " Installation check.
 NeoBundleCheck
 
 " Mapping pour command-t
-"noremap <leader>t <Esc>:CommandT<CR>
+noremap <leader>t <Esc>:CommandT<CR>
 
 " Conf pour tagbar
 "let g:tagbar_usearrows = 1
