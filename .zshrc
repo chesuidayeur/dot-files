@@ -6,8 +6,8 @@ ZSH=$HOME/.oh-my-zsh
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
 #ZSH_THEME="agnoster"
-#ZSH_THEME="robbyrussell"
-ZSH_THEME="blinks"
+ZSH_THEME="robbyrussell"
+#ZSH_THEME="blinks"
 DEFAULT_USER=pgeoffroy
 
 # Example aliases
@@ -40,7 +40,7 @@ COMPLETION_WAITING_DOTS="true"
 # much faster.
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 
-# Uncomment following line if you want to  shown in the command execution time stamp 
+# Uncomment following line if you want to  shown in the command execution time stamp
 # in the history command output. The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|
 # yyyy-mm-dd
 # HIST_STAMPS="mm/dd/yyyy"
@@ -48,16 +48,15 @@ COMPLETION_WAITING_DOTS="true"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(virtualenvwrapper git common-aliases tmux debian pass gpg-agent systemd colored-man extract history-substring-search systemadmin z)
-
-export WORKON_HOME=~/.virtualenvs
+plugins=(git rvm common-aliases pass systemd colored-man extract history-substring-search systemadmin)
 
 source $ZSH/oh-my-zsh.sh
 
-zstyle :omz:plugins:ssh-agent agent-forwarding on
-zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa_home id_rsa_afeu
+#zstyle :omz:plugins:ssh-agent agent-forwarding on
+#zstyle :omz:plugins:ssh-agent identities id_rsa id_rsa_home id_rsa_afeu
 
 # User configuration
+eval $(keychain --eval --quiet id_rsa id_rsa_home id_rsa id_rsa_afeu)
 
 # Use cat > /dev/null, and then type desired keys to get their code
 bindkey "^[^[[C" forward-word
@@ -71,7 +70,10 @@ export PATH=$HOME/.local/bin:$HOME/.opam/system/bin:$HOME/bin:/usr/local/bin:$PA
 # export MANPATH="/usr/local/man:$MANPATH"
 
 if [ -d "$HOME/apps/nodejs/node/bin" ]; then
-  PATH="$HOME/apps/nodejs/node/bin:$HOME/apps/nodejs/node/lib/node_modules/express-generator/bin:$PATH" ;
+  PATH="$HOME/apps/nodejs/node/bin:$PATH" ;
+fi
+if [ -d "$HOME/apps/nodejs/node/lib/node_modules/express-generator" ]; then
+  PATH="$HOME/apps/nodejs/node/lib/node_modules/express-generator/bin:$PATH"
 fi
 
 # Preferred editor for local and remote sessions
@@ -90,6 +92,8 @@ alias tableauLaptop="rdesktop -g 1360x740 -u ${TABLEAU_USER} -p \"${TABLEAU_MDP}
 alias tableau-dev="rdesktop -g 1918x1040 -u ${TABLEAU_USER_DEV} -p \"${TABLEAU_MDP_DEV}\" -D -N -P -z -r disk:csv=/home/pgeoffroy/tableau-share ${TABLEAU_HOST_DEV}"
 alias tableauLow-dev="rdesktop -g 1600x870 -u ${TABLEAU_USER_DEV} -p \"${TABLEAU_MDP_DEV}\" -D -N -P -z -r disk:csv=/home/pgeoffroy/tableau-share ${TABLEAU_HOST_DEV}"
 alias tableauLaptop-dev="rdesktop -g 1360x740 -u ${TABLEAU_USER_DEV} -p \"${TABLEAU_MDP_DEV}\" -D -N -P -z -r disk:csv=/home/pgeoffroy/tableau-share ${TABLEAU_HOST_DEV}"
+
+alias tableau-dev2="rdesktop -g 1918x1040 -u ${TABLEAU_USER} -p \"${TABLEAU_MDP}\" -D -N -P -z -r disk:csv=/home/pgeoffroy/tableau-share 192.168.198.72"
 
 alias git='LANG=en_US.UTF-8 git'
 
@@ -126,48 +130,11 @@ if [ -z "$DISPLAY" ] && [ $(tty) = /dev/tty1 ]; then startx; fi
 # Added by Twgit makefile:
 . /home/pgeoffroy/build/himedia-twgit/install/zsh_completion.sh
 
+# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
+export PATH="$PATH:$HOME/.rvm/bin"
 
-# source ~/.xsh
-
-###-begin-ssh-tunnel-manager-completion-###
-#
-# ssh-tunnel-manager command completion script
-#
-# Installation: ssh-tunnel-manager completion >> ~/.bashrc  (or ~/.zshrc)
-# Or, maybe: ssh-tunnel-manager completion > /usr/local/etc/bash_completion.d/ssh-tunnel-manager
-#
-
-COMP_WORDBREAKS=${COMP_WORDBREAKS/=/}
-COMP_WORDBREAKS=${COMP_WORDBREAKS/@/}
-export COMP_WORDBREAKS
-
-if complete &>/dev/null; then
-  _ssh-tunnel-manager_completion () {
-    local si="$IFS"
-    IFS=$'\n' COMPREPLY=($(COMP_CWORD="$COMP_CWORD" \
-                           COMP_LINE="$COMP_LINE" \
-                           COMP_POINT="$COMP_POINT" \
-                           ssh-tunnel-manager completion -- "${COMP_WORDS[@]}" \
-                           2>/dev/null)) || return $?
-    IFS="$si"
-  }
-  complete -F _ssh-tunnel-manager_completion ssh-tunnel-manager
-elif compctl &>/dev/null; then
-  _ssh-tunnel-manager_completion () {
-    local cword line point words si
-    read -Ac words
-    read -cn cword
-    let cword-=1
-    read -l line
-    read -ln point
-    si="$IFS"
-    IFS=$'\n' reply=($(COMP_CWORD="$cword" \
-                       COMP_LINE="$line" \
-                       COMP_POINT="$point" \
-                       ssh-tunnel-manager completion -- "${words[@]}" \
-                       2>/dev/null)) || return $?
-    IFS="$si"
-  }
-  compctl -K _ssh-tunnel-manager_completion ssh-tunnel-manager
-fi
-###-end-ssh-tunnel-manager-completion-###
+PATH="/home/pgeoffroy/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/pgeoffroy/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/pgeoffroy/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/pgeoffroy/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/pgeoffroy/perl5"; export PERL_MM_OPT;
